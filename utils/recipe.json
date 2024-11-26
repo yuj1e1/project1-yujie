@@ -1,0 +1,13 @@
+[
+  {
+    "recipeName": "Updated Salad Recipe",
+    "description": "A delicious updated salad recipe",
+    "ingredients": [
+      "Updated lettuce",
+      "Updated sauce"
+    ],
+    "steps": "Mix updated lettuce, add updated sauce, serve in a bowl",
+    "imageLink": "https://example.com/updated-salad-image.jpg",
+    "id": "1731281616432197"
+  }
+]
