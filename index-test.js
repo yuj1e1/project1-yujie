@@ -8,7 +8,7 @@ var startPage = "index.html";
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static("./public"));
+app.use(express.static("./instrumented"));
 
 
 const { getFeedbackByEmail } = require('./utils/FeedbackUtil');
@@ -19,7 +19,7 @@ const { addFeedback } = require('./utils/CreateFeedbackUtil');
 
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + "/public/" + startPage);
+    res.sendFile(__dirname + "/instrumented/" + startPage);
 });
 
 
