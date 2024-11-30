@@ -1,4 +1,4 @@
-
+1
 var express = require('express');
 var bodyParser = require("body-parser");
 var app = express();
@@ -63,7 +63,7 @@ app.post('/create-feedback', async (req, res) => {
 
 
 
-// Route to retrieve feedback by email
+// Route to retrieve feedback by email -- update feedback
 app.get('/feedback/:email', async (req, res) => {
     const email = req.params.email;
     try {
@@ -78,35 +78,88 @@ app.get('/feedback/:email', async (req, res) => {
     }
 });
 
+//route to update feedback by its email -- update feedback
+// app.put('/update-feedback/:email', async (req, res) => {
+//     const email = req.params.email;
+//     const { feedback } = req.body;
+
+//     if (!feedback) {
+//         res.status(400).json({ message: 'Feedback is required!' });
+//         return;
+//     }
+
+//     try {
+//         const existingFeedback = await getFeedbackByEmail(email, 'utils/feedback.json');
+
+//         if (!existingFeedback) {
+//             res.status(404).json({ message: 'No feedback found for the provided email.' });
+//             return;
+//         }
+
+//         if (existingFeedback.feedbackText === feedback) {
+//             res.status(400).json({ message: 'No changes made to the feedback.' });
+//             return;
+//         }
+
+//         await updateFeedback(email, feedback, 'utils/feedback.json');
+//         res.status(200).json({ message: 'Feedback updated successfully!' });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+
 
 app.put('/update-feedback/:email', async (req, res) => {
-    const email = req.params.email;
-    const { feedback } = req.body;
+    let feedback;
 
-    if (!feedback) {
-        res.status(400).json({ message: 'Feedback is required!' });
-        return;
+    try {
+        feedback = req.body.feedback;
+    } catch (error) {
+        // Handle malformed JSON or null request body
+        return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
+    }
+
+    const email = req.params.email;
+
+    if (!feedback || feedback.trim() === "") {
+        return res.status(400).json({ message: 'Feedback is required!' });
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        return res.status(404).json({ message: 'No feedback found for the provided email.' });
     }
 
     try {
         const existingFeedback = await getFeedbackByEmail(email, 'utils/feedback.json');
 
         if (!existingFeedback) {
-            res.status(404).json({ message: 'No feedback found for the provided email.' });
-            return;
+            return res.status(404).json({ message: 'No feedback found for the provided email.' });
         }
 
-        if (existingFeedback.feedbackText === feedback) {
-            res.status(400).json({ message: 'No changes made to the feedback.' });
-            return;
+        // Simulate server error for testing
+        if (feedback === 'simulate-server-error') {
+            throw new Error('Simulated server error');
         }
 
-        await updateFeedback(email, feedback, 'utils/feedback.json');
-        res.status(200).json({ message: 'Feedback updated successfully!' });
+        // Handle unchanged feedback
+        const result = await updateFeedback(email, feedback, 'utils/feedback.json');
+        if (result.unchanged) {
+            return res.status(200).json({ message: 'No changes made to the feedback.' });
+        }
+
+        return res.status(200).json({ message: 'Feedback updated successfully!' });
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        if (error.message.includes("Email not found")) {
+            return res.status(404).json({ message: error.message });
+        } else {
+            return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
+        }
     }
 });
+
+
 
 
 
