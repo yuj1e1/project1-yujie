@@ -8,8 +8,8 @@ chai.use(chaiHttp);
 
 let baseUrl;
 let feedbackEmail = "test@example.com";
-let unregisteredEmail = "unregistered@example.com"; // For invalid email testing
-let invalidEmail = "invalid-email"; // Invalid email format
+let unregisteredEmail = "unregistered@example.com"; // For unregistered email testing
+let invalidEmail = "invalidemail"; // Invalid email format
 
 // Setting up the server
 describe('Feedback API', () => {
@@ -31,7 +31,7 @@ describe('Feedback API', () => {
         it('should update feedback successfully', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${feedbackEmail}`)
-                .send({ feedback: "update feedback 1" })
+                .send({ feedback: "update feedback" })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.message).to.equal('Feedback updated successfully!');
@@ -39,16 +39,18 @@ describe('Feedback API', () => {
                 });
         });
 
+
         it('should return 404 for an unrecognized email', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${unregisteredEmail}`)
                 .send({ feedback: 'Feedback for unregistered email' })
                 .end((err, res) => {
-                    expect(res).to.have.status(404);
-                    expect(res.body.message).to.equal('No feedback found for the provided email.');
+                    expect(res).to.have.status(404); // Expecting 404 for unrecognized email
+                    expect(res.body.message).to.equal('Email is unrecognized. Please enter a valid registered email.');
                     done();
                 });
         });
+        
 
         it('should return 400 when no feedback text is provided', (done) => {
             chai.request(baseUrl)
@@ -64,7 +66,7 @@ describe('Feedback API', () => {
         it('should return 200 when no changes are made to the feedback', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${feedbackEmail}`)
-                .send({ feedback: "update feedback 1" }) // Sending the same feedback text
+                .send({ feedback: "update feedback" }) // Sending the same feedback text
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.message).to.equal('No changes made to the feedback.');
@@ -72,13 +74,13 @@ describe('Feedback API', () => {
                 });
         });
 
-        it('should return 404 for an invalid email format', (done) => {
+        it('should return 400 for an invalid email format', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${invalidEmail}`)
                 .send({ feedback: "update feedback" })
                 .end((err, res) => {
-                    expect(res).to.have.status(404);
-                    expect(res.body.message).to.equal('No feedback found for the provided email.');
+                    expect(res).to.have.status(400);
+                    expect(res.body.message).to.equal('Invalid email address.');
                     done();
                 });
         });
