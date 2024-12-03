@@ -1,4 +1,3 @@
-1
 var express = require('express');
 var bodyParser = require("body-parser");
 var app = express();
@@ -10,29 +9,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./instrumented"));
 
-
 const { getFeedbackByEmail } = require('./utils/FeedbackUtil');
 const { updateFeedback } = require('./utils/UpdateFeedbackUtil');
 const { addFeedback } = require('./utils/CreateFeedbackUtil');
-
-
-
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/instrumented/" + startPage);
 });
 
-
 const {addRecipe , viewRecipe, viewRecipeById, deleteRecipe} = require('./utils/RecipeUtils');
 const {updateRecipe} = require ('./utils/updateRecipeUtils');
-
- 
 
 app.post('/addRecipe', addRecipe);
 app.get('/viewRecipe', viewRecipe); // View a recipe 
 app.delete('/deleteRecipe/:id', deleteRecipe); // Delete a recipe by id
 app.put('/updateRecipe/:id', updateRecipe); // Update a recipe by id
-
 
 app.get('/viewRecipe/:id', viewRecipeById); // View a recipe by id
 
@@ -78,6 +69,8 @@ app.get('/feedback/:email', async (req, res) => {
     }
 });
 
+
+
 app.put('/update-feedback/:email', async (req, res) => {
     let feedback;
 
@@ -94,25 +87,23 @@ app.put('/update-feedback/:email', async (req, res) => {
         return res.status(400).json({ message: 'Feedback is required!' });
     }
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        return res.status(404).json({ message: 'No feedback found for the provided email.' });
-    }
-
     try {
-        const existingFeedback = await getFeedbackByEmail(email, 'utils/feedback.json');
-
-        if (!existingFeedback) {
-            return res.status(404).json({ message: 'No feedback found for the provided email.' });
+        // Validate email format
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            return res.status(400).json({ message: 'Invalid email address.' });
         }
 
-        // Simulate server error for testing
-        if (feedback === 'simulate-server-error') {
-            throw new Error('Simulated server error');
-        }
-
-        // Handle unchanged feedback
         const result = await updateFeedback(email, feedback, 'utils/feedback.json');
+
+        if (result.error === "Invalid email format.") {
+            return res.status(400).json({ message: result.error });
+        }
+
+        if (result.error === "Email not found in the database. Unable to update feedback.") {
+            return res.status(404).json({ message: 'Email is unrecognized. Please enter a valid registered email.' });
+        }
+
         if (result.unchanged) {
             return res.status(200).json({ message: 'No changes made to the feedback.' });
         }
@@ -120,13 +111,14 @@ app.put('/update-feedback/:email', async (req, res) => {
         return res.status(200).json({ message: 'Feedback updated successfully!' });
 
     } catch (error) {
-        if (error.message.includes("Email not found")) {
-            return res.status(404).json({ message: error.message });
-        } else {
-            return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
+        if (error.message === 'Simulated server error') {
+            return res.status(500).json({ message: 'Request failed due to a simulated server error.' });
         }
+        return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
     }
 });
+
+
 
 
 

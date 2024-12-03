@@ -1,39 +1,43 @@
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("email").addEventListener("blur", retrieveFeedback);
-});
+
+function showAlert(message) {
+    alert(message); // Reusable function for showing alerts
+}
 
 function retrieveFeedback() {
     const email = document.getElementById("email").value;
 
-    // Validate email format using regex
+    // Validate email format
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-        alert('Invalid email address');
+        showAlert('Invalid email address. Please provide a valid email in the format: user@example.com');
         return;
     }
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.open("GET", `/feedback/${email}`, true);
     request.onload = function () {
         if (request.status >= 200 && request.status < 300) {
             const response = JSON.parse(request.responseText);
             if (response) {
                 const feedbackElement = document.getElementById("feedback");
-                feedbackElement.value = response.feedbackText; // Set current feedback text
-                feedbackElement.defaultValue = response.feedbackText; // Set default value for comparison
-                document.getElementById("email").readOnly = true; // Make email read-only after retrieving feedback
+                feedbackElement.value = response.feedbackText;
+                feedbackElement.defaultValue = response.feedbackText; // For detecting changes
+                document.getElementById("email").readOnly = true;
             } else {
-                alert('No feedback found for this email.');
+                showAlert('No feedback found for this email.'); // Alert for unregistered email
             }
         } else if (request.status === 404) {
-            alert('Email is unrecognized. Please enter a valid registered email.');
+            // Alert specifically for missing feedback files
+            showAlert('The email you entered is not recognized. Please try again with a registered email.');
         } else {
-            alert('Error retrieving feedback.');
+            showAlert('An unexpected error occurred while retrieving feedback.');
         }
     };
+
     request.onerror = function () {
-        alert('Request failed. Please check your network connection.');
+        showAlert('Request failed. Please check your network connection.');
     };
+
     request.send();
 }
 
@@ -42,40 +46,38 @@ function updateFeedback() {
     const feedbackElement = document.getElementById("feedback");
     const feedback = feedbackElement.value;
 
-    // Validate feedback input
     if (!feedback) {
-        alert('Feedback is required!');
+        showAlert('Feedback cannot be empty. Please provide your feedback.');
         return;
     }
 
-    // Check for unchanged feedback
     if (feedback === feedbackElement.defaultValue) {
-        alert('No changes made');
+        showAlert('No changes were detected in the feedback. Please make updates before submitting.');
         return;
     }
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.open("PUT", `/update-feedback/${email}`, true);
     request.setRequestHeader('Content-Type', 'application/json');
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 300) {
             const response = JSON.parse(request.responseText);
-            alert(response.message);
-            feedbackElement.defaultValue = feedback; // Update defaultValue to the new feedback after a successful update
+            showAlert(response.message);
+            feedbackElement.defaultValue = feedback; // Update defaultValue after a successful update
         } else {
             const response = JSON.parse(request.responseText);
-            alert(response.message);
+            if (response.message.includes('Feedback file not found')) {
+                showAlert('Feedback file not found. Please contact support.');
+            } else {
+                showAlert('The email you entered is not recognized. Please try again with a registered email.');
+            }
         }
     };
 
     request.onerror = function () {
-        alert('Request failed. Please check your network connection.');
+        showAlert('Request failed. Please check your network connection.');
     };
 
     request.send(JSON.stringify({ feedback }));
 }
-
-
-
-
