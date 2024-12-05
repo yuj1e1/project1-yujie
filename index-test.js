@@ -70,7 +70,6 @@ app.get('/feedback/:email', async (req, res) => {
 });
 
 
-
 app.put('/update-feedback/:email', async (req, res) => {
     let feedback;
 
@@ -111,16 +110,9 @@ app.put('/update-feedback/:email', async (req, res) => {
         return res.status(200).json({ message: 'Feedback updated successfully!' });
 
     } catch (error) {
-        if (error.message === 'Simulated server error') {
-            return res.status(500).json({ message: 'Request failed due to a simulated server error.' });
-        }
         return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
     }
 });
-
-
-
-
 
 
 
