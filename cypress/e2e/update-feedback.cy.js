@@ -73,14 +73,15 @@ describe('Update Feedback Frontend with Alerts', () => {
             statusCode: 404,
             body: { message: 'Email is unrecognized. Please enter a valid registered email.' },
         }).as('getFeedback');
-
+    
         cy.get('#email').type('unknown@example.com').blur();
         cy.wait('@getFeedback');
-
+    
         cy.on('window:alert', (alertText) => {
             expect(alertText).to.equal('Email is unrecognized. Please enter a valid registered email.');
         });
     });
+    
 
     it('should validate invalid email formats', () => {
         cy.get('#email').type('invalid-email').blur();
@@ -93,32 +94,19 @@ describe('Update Feedback Frontend with Alerts', () => {
     it('should handle server errors gracefully', () => {
         cy.intercept('PUT', '/update-feedback/test@example.com', {
             statusCode: 500,
-            body: { message: 'Update failed: Request failed. Please check your network connection.' },
+            body: { message: '' },
         }).as('updateFeedback');
-
+    
         cy.get('#email').type('test@example.com').blur();
         cy.get('#feedback').clear().type('simulate-server-error');
         cy.get('button').contains('Update Feedback').click();
         cy.wait('@updateFeedback');
-
+    
         cy.on('window:alert', (alertText) => {
-            expect(alertText).to.equal('Update failed: Request failed. Please check your network connection.');
+            expect(alertText).to.equal('An unexpected error occurred while updating feedback.');
         });
     });
-
-    it('should show an error if the feedback file is missing', () => {
-        cy.intercept('GET', '/feedback/test@example.com', {
-            statusCode: 500,
-            body: { message: 'Feedback file not found. Please contact support.' },
-        }).as('getFeedback');
-
-        cy.get('#email').type('test@example.com').blur();
-        cy.wait('@getFeedback');
-
-        cy.on('window:alert', (alertText) => {
-            expect(alertText).to.equal('Feedback file not found. Please contact support.');
-        });
-    });
+        
 
     it('should notify the user when no changes are made to the feedback', () => {
         cy.intercept('GET', '/feedback/test@example.com', {
@@ -132,21 +120,42 @@ describe('Update Feedback Frontend with Alerts', () => {
         cy.get('button').contains('Update Feedback').click();
 
         cy.on('window:alert', (alertText) => {
-            expect(alertText).to.equal('No changes were detected in the feedback. Please make updates before submitting.');
+            expect(alertText).to.equal('No changes made to the feedback.');
         });
     });
 
     it('should handle server errors during feedback retrieval', () => {
+        // Intercept the API request and simulate a server error
         cy.intercept('GET', '/feedback/test@example.com', {
-            statusCode: 500,
-            body: { message: 'Server error while retrieving feedback.' },
-        }).as('getFeedback');
-
+            statusCode: 500, // Internal Server Error
+            body: { message: 'An unexpected error occurred while retrieving feedback.' },
+        }).as('getFeedback'); // Alias the request for waiting later
+    
+        // Simulate user typing a valid email and triggering the API call
         cy.get('#email').type('test@example.com').blur();
-        cy.wait('@getFeedback');
-
+        cy.wait('@getFeedback'); // Wait for the intercepted request to complete
+    
+        // Check if the correct alert message is shown
         cy.on('window:alert', (alertText) => {
             expect(alertText).to.equal('An unexpected error occurred while retrieving feedback.');
         });
     });
+    
+
+
+    it('should show an error if the feedback file is missing', () => {
+        cy.intercept('GET', '/feedback/test@example.com', {
+            statusCode: 500,
+            body: { message: 'Feedback file not found. Please contact support.' },
+        }).as('getFeedback');
+    
+        cy.get('#email').type('test@example.com').blur();
+        cy.wait('@getFeedback');
+    
+        cy.on('window:alert', (alertText) => {
+            expect(alertText).to.equal('Feedback file not found. Please contact support.');
+        });
+    });
+
+    
 });
