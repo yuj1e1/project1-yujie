@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js in Ubuntu
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20.13.1
 
       - name: Remove existing node_modules folder from cloned project
         run: rm -rf /home/runner/work/project1-melanie/project1-melanie/node_modules/*
