@@ -7,14 +7,14 @@ var startPage = "index.html";
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static("./public"));
+app.use(express.static("./instrumented"));
 
 const { getFeedbackByEmail } = require('./utils/FeedbackUtil');
 const { updateFeedback } = require('./utils/UpdateFeedbackUtil');
 const { addFeedback } = require('./utils/CreateFeedbackUtil');
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + "/public/" + startPage);
+    res.sendFile(__dirname + "/instrumented/" + startPage);
 });
 
 const {addRecipe , viewRecipe, viewRecipeById, deleteRecipe} = require('./utils/RecipeUtils');
@@ -70,7 +70,6 @@ app.get('/feedback/:email', async (req, res) => {
 });
 
 
-
 app.put('/update-feedback/:email', async (req, res) => {
     let feedback;
 
@@ -114,6 +113,7 @@ app.put('/update-feedback/:email', async (req, res) => {
         return res.status(500).json({ message: 'Request failed. Please check your network connection.' });
     }
 });
+
 
 
 server = app.listen(PORT, function () {

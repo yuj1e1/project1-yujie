@@ -1,35 +1,43 @@
-// function retrieveFeedback() {
-//     const email = document.getElementById("email").value;
+function showAlert(message) {
+    alert(message); // Reusable function for showing alerts
+}
 
-//     // Validate email format using regex
-//     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (!emailPattern.test(email)) {
-//         alert('Invalid email address');
-//         return;
-//     }
 
-//     var request = new XMLHttpRequest();
-//     request.open("GET", `/feedback/${email}`, true);
-//     request.onload = function () {
-//         if (request.status >= 200 && request.status < 300) {
-//             const response = JSON.parse(request.responseText);
-//             if (response) {
-//                 document.getElementById("feedback").value = response.feedbackText;
-//                 document.getElementById("email").readOnly = true; // Make email read-only after retrieving feedback
-//             } else {
-//                 alert('No feedback found for this email.');
-//             }
-//         } else if (request.status === 404) {
-//             alert('Email is unrecognized. Please enter a valid registered email.');
-//         } else {
-//             alert('Error retrieving feedback.');
-//         }
-//     };
-//     request.onerror = function () {
-//         alert('Request failed. Please check your network connection.');
-//     };
-//     request.send();
-// }
+function retrieveFeedback() {
+    const email = document.getElementById("email").value;
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        showAlert('Invalid email address. Please provide a valid email in the format: user@example.com');
+        return;
+    }
+
+    const request = new XMLHttpRequest();
+    request.open("GET", `/feedback/${email}`, true);
+
+    request.onload = function () {
+        try {
+            const response = JSON.parse(request.responseText);
+            if (request.status >= 200 && request.status < 300) {
+                const feedbackElement = document.getElementById("feedback");
+                feedbackElement.value = response.feedbackText || '';
+                feedbackElement.defaultValue = response.feedbackText || '';
+                document.getElementById("email").readOnly = true;
+            } else {
+                // Use the response message from the server if available, or fallback to a default error message
+                showAlert(response.message || 'An unexpected error occurred while retrieving feedback.');
+            }
+        } catch (error) {
+            showAlert('Failed to process the server response. Please try again.');
+        }
+    };
+
+    request.onerror = function () {
+        showAlert('Request failed. Please check your network connection.');
+    };
+
+    request.send();
+}
 
 
 // function updateFeedback() {
@@ -37,32 +45,36 @@
 //     const feedbackElement = document.getElementById("feedback");
 //     const feedback = feedbackElement.value;
 
-//     if (!feedback) {
-//         alert('Feedback is required!');
+//     if (!feedback.trim()) {
+//         showAlert('Feedback cannot be empty. Please provide your feedback.');
 //         return;
 //     }
 
 //     if (feedback === feedbackElement.defaultValue) {
-//         alert('No changes made');
+//         showAlert('No changes made');
 //         return;
 //     }
 
-//     var request = new XMLHttpRequest();
+//     const request = new XMLHttpRequest();
 //     request.open("PUT", `/update-feedback/${email}`, true);
 //     request.setRequestHeader('Content-Type', 'application/json');
 
 //     request.onload = function () {
-//         if (request.status >= 200 && request.status < 300) {
+//         try {
 //             const response = JSON.parse(request.responseText);
-//             alert(response.message);
-//         } else {
-//             const response = JSON.parse(request.responseText);
-//             alert(response.message);
+//             if (request.status >= 200 && request.status < 300) {
+//                 showAlert(response.message || 'Feedback updated successfully.');
+//                 feedbackElement.defaultValue = feedback;
+//             } else {
+//                 showAlert(response.message || 'An unexpected error occurred while updating feedback.');
+//             }
+//         } catch (error) {
+//             showAlert('Failed to process the server response. Please try again.');
 //         }
 //     };
 
 //     request.onerror = function () {
-//         alert('Request failed. Please check your network connection.');
+//         showAlert('Request failed. Please check your network connection.');
 //     };
 
 //     request.send(JSON.stringify({ feedback }));
@@ -70,76 +82,35 @@
 
 
 
-function retrieveFeedback() {
-    const email = document.getElementById("email").value;
-
-    // Validate email format using regex
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        alert('Invalid email address');
-        return;
-    }
-
-    var request = new XMLHttpRequest();
-    request.open("GET", `/feedback/${email}`, true);
-    request.onload = function () {
-        if (request.status >= 200 && request.status < 300) {
-            const response = JSON.parse(request.responseText);
-            if (response) {
-                const feedbackElement = document.getElementById("feedback");
-                feedbackElement.value = response.feedbackText; // Set current feedback text
-                feedbackElement.defaultValue = response.feedbackText; // Set default value for comparison
-                document.getElementById("email").readOnly = true; // Make email read-only after retrieving feedback
-            } else {
-                alert('No feedback found for this email.');
-            }
-        } else if (request.status === 404) {
-            alert('Email is unrecognized. Please enter a valid registered email.');
-        } else {
-            alert('Error retrieving feedback.');
-        }
-    };
-    request.onerror = function () {
-        alert('Request failed. Please check your network connection.');
-    };
-    request.send();
-}
-
 function updateFeedback() {
     const email = document.getElementById("email").value;
     const feedbackElement = document.getElementById("feedback");
-    const feedback = feedbackElement.value;
+    const feedback = feedbackElement.value.trim();
 
-    // Validate feedback input
     if (!feedback) {
-        alert('Feedback is required!');
+        showAlert('Feedback cannot be empty. Please provide your feedback.');
         return;
     }
 
-    // Check for unchanged feedback
     if (feedback === feedbackElement.defaultValue) {
-        alert('No changes made'); // Notify user
-        return; // Do not send the request
+        showAlert('No changes made to the feedback.'); // This matches the backend message
+        return;
     }
 
-    var request = new XMLHttpRequest();
+    const request = new XMLHttpRequest();
     request.open("PUT", `/update-feedback/${email}`, true);
     request.setRequestHeader('Content-Type', 'application/json');
 
     request.onload = function () {
-        if (request.status >= 200 && request.status < 300) {
-            const response = JSON.parse(request.responseText);
-            alert(response.message); // Notify user of success or any specific backend message
-            feedbackElement.defaultValue = feedback; // Update defaultValue to the new feedback after a successful update
+        if (this.status === 200) {
+            const response = JSON.parse(this.responseText);
+            showAlert(response.message);
         } else {
-            const response = JSON.parse(request.responseText);
-            alert(response.message);
+            showAlert('An unexpected error occurred while updating feedback.'); // Generic error message
         }
     };
 
-    request.onerror = function () {
-        alert('Request failed. Please check your network connection.');
-    };
+    
 
     request.send(JSON.stringify({ feedback }));
 }
