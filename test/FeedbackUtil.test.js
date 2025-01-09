@@ -31,7 +31,7 @@ describe('Feedback API', () => {
         it('should update feedback successfully', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${feedbackEmail}`)
-                .send({ feedback: "update feedback 1" })
+                .send({ feedback: "update feedback 2" })
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.message).to.equal('Feedback updated successfully!');
@@ -66,7 +66,7 @@ describe('Feedback API', () => {
         it('should return 200 when no changes are made to the feedback', (done) => {
             chai.request(baseUrl)
                 .put(`/update-feedback/${feedbackEmail}`)
-                .send({ feedback: "update feedback 1" }) // Sending the same feedback text
+                .send({ feedback: "update feedback 2" }) // Sending the same feedback text
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body.message).to.equal('No changes made to the feedback.');
