@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: recipe-manager-container
-        image: cyujie/recipe-docker-img:v2  
+        image: cyujie/recipe-docker-img:v2 
         ports:
         - containerPort: 5050  
 
