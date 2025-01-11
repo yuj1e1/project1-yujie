@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe-manager-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recipe-manager-app
+  template:
+    metadata:
+      labels:
+        app: recipe-manager-app
+    spec:
+      containers:
+      - name: recipe-manager-container
+        image: cyujie/recipe-docker-img:latest  
+        ports:
+        - containerPort: 5050  
+
