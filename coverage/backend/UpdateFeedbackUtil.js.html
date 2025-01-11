@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10.52% </span>
+                <span class="strong">94.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/19</span>
+                <span class='fraction'>18/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.11% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/18</span>
+                <span class='fraction'>17/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -104,75 +104,75 @@
 <a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { readFeedback, writeFeedback } = require('./FeedbackUtil'); // Import shared utility functions
 &nbsp;
-async function <span class="fstat-no" title="function not covered" >updateFeedback(</span>email, feedbackText, filename) {
-<span class="cstat-no" title="statement not covered" >    if (!filename) {</span>
-<span class="cstat-no" title="statement not covered" >        return { error: "Filename is missing. Operation could not be completed." };</span>
+async function updateFeedback(email, feedbackText, filename) {
+    if (!filename) {
+        return { error: "Filename is missing. Operation could not be completed." };
     }
 &nbsp;
     // Validate email format
-    const emailPattern = <span class="cstat-no" title="statement not covered" >/^[^\s@]+@[^\s@]+\.[^\s@]+$/;</span>
-<span class="cstat-no" title="statement not covered" >    if (!emailPattern.test(email)) {</span>
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!emailPattern.test(email)) {
 <span class="cstat-no" title="statement not covered" >        return { error: "Invalid email format." };</span>
     }
 &nbsp;
     // Simulate a server error
-<span class="cstat-no" title="statement not covered" >    if (feedbackText === 'simulate-server-error') {</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error('Simulated server error'); </span>// Simulate a server-side error
+    if (feedbackText === 'simulate-server-error') {
+        throw new Error('Simulated server error'); // Simulate a server-side error
     }
 &nbsp;
-    const feedbackList = <span class="cstat-no" title="statement not covered" >await readFeedback(filename);</span>
-    const existingFeedbackIndex = <span class="cstat-no" title="statement not covered" >feedbackList.findIndex(<span class="fstat-no" title="function not covered" >fb</span> =&gt; <span class="cstat-no" title="statement not covered" >fb.email === email)</span>;</span>
+    const feedbackList = await readFeedback(filename);
+    const existingFeedbackIndex = feedbackList.findIndex(fb =&gt; fb.email === email);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (existingFeedbackIndex === -1) {</span>
-<span class="cstat-no" title="statement not covered" >        return { error: "Email not found in the database. Unable to update feedback." }; </span>// Return the correct error
+    if (existingFeedbackIndex === -1) {
+        return { error: "Email not found in the database. Unable to update feedback." }; // Return the correct error
     }
 &nbsp;
     // Check if feedback is unchanged
-<span class="cstat-no" title="statement not covered" >    if (feedbackList[existingFeedbackIndex].feedbackText === feedbackText) {</span>
-<span class="cstat-no" title="statement not covered" >        return { unchanged: true }; </span>// Signal that no changes were made
+    if (feedbackList[existingFeedbackIndex].feedbackText === feedbackText) {
+        return { unchanged: true }; // Signal that no changes were made
     }
 &nbsp;
     // Update existing feedback
-<span class="cstat-no" title="statement not covered" >    feedbackList[existingFeedbackIndex].feedbackText = feedbackText;</span>
-<span class="cstat-no" title="statement not covered" >    await writeFeedback(feedbackList, filename);</span>
-<span class="cstat-no" title="statement not covered" >    return { unchanged: false }; </span>// Signal that changes were made
+    feedbackList[existingFeedbackIndex].feedbackText = feedbackText;
+    await writeFeedback(feedbackList, filename);
+    return { unchanged: false }; // Signal that changes were made
 }
 &nbsp;
 module.exports = { updateFeedback };
@@ -184,7 +184,7 @@ module.exports = { updateFeedback };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-09T09:14:19.915Z
+                at 2025-01-10T08:47:25.550Z
             </div>
         <script src="prettify.js"></script>
         <script>
