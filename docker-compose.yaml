@@ -1,0 +1,9 @@
+services:
+  build-rms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cyujie/recipe-docker-img:latest
+    container_name: recipe-docker-container
+    ports:
+      - "8000:5050"
