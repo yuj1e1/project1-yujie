@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: cyujie/recipe-docker-img:latest
+    image: cyujie/recipe-docker-img:v2
     container_name: recipe-docker-container
     ports:
       - "8000:5050"
