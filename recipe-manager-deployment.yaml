@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: project1-yujie
-        image: cyujie/recipe-docker-img:v5
+        image: cyujie/recipe-docker-img:v6
         ports:
         - containerPort: 5050  
 
