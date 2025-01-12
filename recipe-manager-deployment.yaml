@@ -13,7 +13,7 @@ spec:
         app: recipe-manager-app
     spec:
       containers:
-      - name: project1-yujie
+      - name: recipe-manager-container
         image: cyujie/recipe-docker-img:v6
         ports:
         - containerPort: 5050  
