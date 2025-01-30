@@ -7,3 +7,4 @@ services:
     container_name: recipe-docker-container
     ports:
       - "8000:5050"
+      
