@@ -5,6 +5,36 @@ const logger = require('./logger');
 const PORT = process.env.PORT || 5050;
 var startPage = "index.html";
 
+//prometheus
+const client = require('prom-client');
+
+// Create a Registry for Prometheus
+const register = new client.Registry();
+client.collectDefaultMetrics({ register });
+
+//Create a custom metric to track HTTP requests
+const httpRequestCounter = new client.Counter({
+    name: 'http_requests_total',
+    help: 'Total number of HTTP requests',
+    labelNames: ['method', 'route', 'status_code'],
+  });
+  register.registerMetric(httpRequestCounter);
+  
+  //Middleware to log HTTP requests to Prometheus
+  app.use((req, res, next) => {
+    res.on('finish', () => {
+      httpRequestCounter.inc({ method: req.method, route: req.path, status_code: res.statusCode });
+    });
+    next();
+  });
+  
+  // Expose `/metrics` endpoint for Prometheus to scrape
+  app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  });
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
