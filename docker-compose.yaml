@@ -8,11 +8,3 @@ services:
     ports:
       - "8000:5050"
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # Mount config file
-    ports:
-      - "9090:9090"  # Expose Prometheus UI
-    restart: always

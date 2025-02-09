@@ -5,34 +5,58 @@ const logger = require('./logger');
 const PORT = process.env.PORT || 5050;
 var startPage = "index.html";
 
-//prometheus
+// Prometheus Setup
 const client = require('prom-client');
 
 // Create a Registry for Prometheus
 const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 
-//Create a custom metric to track HTTP requests
+// Create a custom metric to track HTTP requests
 const httpRequestCounter = new client.Counter({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
     labelNames: ['method', 'route', 'status_code'],
-  });
-  register.registerMetric(httpRequestCounter);
-  
-  //Middleware to log HTTP requests to Prometheus
-  app.use((req, res, next) => {
+});
+register.registerMetric(httpRequestCounter);
+
+// Create a metric to track response duration
+const httpRequestDuration = new client.Histogram({
+    name: 'http_request_duration_seconds',
+    help: 'Duration of HTTP requests in seconds',
+    labelNames: ['method', 'route', 'status_code'],
+    buckets: [0.1, 0.5, 1, 3, 5] // Buckets for response time in seconds
+});
+register.registerMetric(httpRequestDuration);
+
+// Middleware to log HTTP requests and response duration
+app.use((req, res, next) => {
+    const start = Date.now();
     res.on('finish', () => {
-      httpRequestCounter.inc({ method: req.method, route: req.path, status_code: res.statusCode });
+        let route = req.route ? req.route.path : req.path;
+        route = route.replace(/\/[^/]+$/, "/:email"); // Normalize dynamic routes
+
+        httpRequestCounter.inc({ 
+            method: req.method, 
+            route: route, 
+            status_code: res.statusCode 
+        });
+
+        const duration = (Date.now() - start) / 1000; // Convert ms to seconds
+        httpRequestDuration.observe({ 
+            method: req.method, 
+            route: route, 
+            status_code: res.statusCode 
+        }, duration);
     });
     next();
-  });
-  
-  // Expose `/metrics` endpoint for Prometheus to scrape
-  app.get('/metrics', async (req, res) => {
+});
+
+// Expose `/metrics` endpoint for Prometheus to scrape
+app.get('/metrics', async (req, res) => {
     res.set('Content-Type', register.contentType);
     res.end(await register.metrics());
-  });
+});
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
