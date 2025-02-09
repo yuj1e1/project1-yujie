@@ -40,48 +40,6 @@ function retrieveFeedback() {
 }
 
 
-// function updateFeedback() {
-//     const email = document.getElementById("email").value;
-//     const feedbackElement = document.getElementById("feedback");
-//     const feedback = feedbackElement.value;
-
-//     if (!feedback.trim()) {
-//         showAlert('Feedback cannot be empty. Please provide your feedback.');
-//         return;
-//     }
-
-//     if (feedback === feedbackElement.defaultValue) {
-//         showAlert('No changes made');
-//         return;
-//     }
-
-//     const request = new XMLHttpRequest();
-//     request.open("PUT", `/update-feedback/${email}`, true);
-//     request.setRequestHeader('Content-Type', 'application/json');
-
-//     request.onload = function () {
-//         try {
-//             const response = JSON.parse(request.responseText);
-//             if (request.status >= 200 && request.status < 300) {
-//                 showAlert(response.message || 'Feedback updated successfully.');
-//                 feedbackElement.defaultValue = feedback;
-//             } else {
-//                 showAlert(response.message || 'An unexpected error occurred while updating feedback.');
-//             }
-//         } catch (error) {
-//             showAlert('Failed to process the server response. Please try again.');
-//         }
-//     };
-
-//     request.onerror = function () {
-//         showAlert('Request failed. Please check your network connection.');
-//     };
-
-//     request.send(JSON.stringify({ feedback }));
-// }
-
-
-
 function updateFeedback() {
     const email = document.getElementById("email").value;
     const feedbackElement = document.getElementById("feedback");

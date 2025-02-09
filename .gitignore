@@ -1,7 +1,10 @@
 # Ignore node_modules folder
 node_modules/
+prometheus.exe
+promtool.exe
 
 # Ignore all log files
+data/
 *.log
 
 # Ignore NYC output
