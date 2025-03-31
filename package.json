@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@cypress/code-coverage": "^3.13.7",
-    "body-parser": "^1.20.3",
+    "body-parser": "^2.2.0",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "cypress": "^13.16.1",
